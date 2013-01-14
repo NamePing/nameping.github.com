@@ -11,7 +11,7 @@
         	$.ajax({
         		url: 'https://api.twitter.com/1.1/users/show.json?screen_name=rsarver',
         		crossDomain: true,
-        		dataType: 'json',
+        		dataType: 'jsonp',
         		success: function(data, status) {
         			console.log("Success");
         			console.log(data);
