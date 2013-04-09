@@ -25,6 +25,15 @@
             $('#nameInputField').attr('value', getUrlVars()["q"])
             $('#nameInputForm').trigger('submit');
           }
+
+          $('#nameInputField').keyup(function() {
+            var value = $(this).val();
+            if (value.length > 15) {
+              $(this).css('color', 'orange');
+            } else {
+              $(this).css('color', 'black');
+            }
+          });
         });
 
 
