@@ -28,8 +28,8 @@
 
           $('#nameInputField').keyup(function() {
             var value = $(this).val();
-            if (value.length > 15) {
-              $(this).css('color', 'orange');
+            if (value.length > 15 || value.length < 5) {
+              $(this).css('color', 'red');
             } else {
               $(this).css('color', 'black');
             }
