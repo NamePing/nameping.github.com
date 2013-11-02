@@ -6,3 +6,13 @@ body {
 .bigForm {
     font-size: 1.5rem;
 }
+
+.twoColumn {
+    float:left;
+    width:40%;
+    min-width:300px;
+}
+
+.displayNone {
+    display: none;
+}
