@@ -5,173 +5,19 @@
         <meta name=description content="">
         <meta name=viewport content="width=device-width, initial-scale=1">
         <title>Instant Name Check</title>
-        <link rel=stylesheet href="css/style.css">
+        <link rel=stylesheet href="style/style.css">
         <link rel=author href="humans.txt">
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-
-        <script type="text/javascript">
-
-        
-        $(document).ready(function() {
-          $('#output').html("Facebook: ");
-
-
-          $('#nameInputForm').submit(checkFacebookAvail);
-          $('#nameInputForm').submit(checkTwitterAvail);
-          $('#nameInputForm').submit(checkDomainsAvail);
-          $('#nameInputForm').submit(updateSiteAddress);
-
-          if (getUrlVars()["q"]) {
-            $('#nameInputField').attr('value', getUrlVars()["q"])
-            $('#nameInputForm').trigger('submit');
-          }
-
-          $('#nameInputField').keyup(function() {
-            var value = $(this).val();
-            if (value.length > 15 || value.length < 5) {
-              $(this).css('color', 'red');
-            } else {
-              $(this).css('color', 'black');
-            }
-          });
-
-          // Trigger keyup for already populated field.
-          $('#nameInputField').trigger('keyup');
-        });
-
-
-        function updateSiteAddress() {
-          currentURL = window.location.href.toString().split("?q=")[0];
-          window.history.pushState("object or string", "Title", currentURL + "?q=" + $('#nameInputField').attr('value'));
-        }
-
-        function checkDomainsAvail() {
-          $('#doNameStatus').html('<img src="http://www.laneaviation.com/wp-content/themes/laneaviation/images/loading.gif" width="25px" />');
-          $('#doNameStatusWrap').css('color', 'gray');
-
-          domainNameToCheck = $('input#nameInputField').attr('value');
-          domainrAPIURL = 'http://domai.nr/api/json/search?q=' + domainNameToCheck;
-
-          $.ajax({
-            url: domainrAPIURL,
-            crossDomain: true,
-            dataType: 'jsonp',
-            success: function(data, status) {
-                $('#doNameStatus').html('');
-                $('#doNameStatusWrap').css('color', 'black');
-              data.results.forEach(function(element, index, array) {
-                if (element.availability != 'tld') {
-                 $('#doNameStatus').append(
-                  '<p id="domainNumber' + index + '">' + element.domain + '</p>'
-                  );
-                if (element.path != '') {
-                  $('#doNameStatus p#domainNumber' + index).append(element.path);
-                }
-                $('#doNameStatus p#domainNumber' + index).append(': ' + element.availability);
-
-
-                if (element.availability == 'available') {
-                  $('#doNameStatus p#domainNumber' + index).append(' <a href="'+ element.register_url +'">Purchase</a>');
-                  $('#domainNumber' + index).css('color', 'green');
-                } else {
-                  $('#doNameStatus p#domainNumber' + index).append(' <a href="http://centralops.net/co/DomainDossier.aspx/?addr='+ element.domain +'&dom_whois=true&dom_dns=true&net_whois=true">Whois</a>');
-                  $('#domainNumber' + index).css('color', 'red');
-                }
-                }
-              });
-            },
-            error: function(data, e1, e2) {
-              $('#doNameStatus').html(e1);
-            },
-            timeout: 3000
-          })
-        }
-
-        function checkTwitterAvail() {
-          $('#twNameStatus').html("Checking...");
-          $('#twNameStatusWrap').css('color', 'gray');
-
-          twitterNameToCheck = $('input#nameInputField').attr('value');
-          twitterAPIURL = 'https://api.twitter.com/1/users/show.json?screen_name=' + twitterNameToCheck;
-          if (twitterNameToCheck.length < 16) {
-            $.ajax({
-              url: twitterAPIURL,
-              crossDomain: true,
-              dataType: 'jsonp',
-              success: function(data, status) {
-                $('#twNameStatus').html("Taken");
-                $('#twNameStatusWrap').css('color', 'red');
-              },
-              error: function(data, e1, e2) {
-                if (false && e2 && e2 === "timeout") {
-                  $('#twNameStatus').html("Error (may have hit 150/hr. limit).");
-                  $('#twNameStatusWrap').css('color', 'gray');
-                } else {
-                  console.log(e2);
-                  $('#twNameStatus').html("Available");
-                  $('#twNameStatusWrap').css('color', 'green');
-                }
-              },
-              timeout: 666
-            });
-          } else {
-            $('#twNameStatus').html("Must be 15 characters or less.");
-            $('#twNameStatusWrap').css('color', 'orange');
-          }
-          return false;
-        }
-
-        function checkFacebookAvail() {
-          $('#fbNameStatus').html("Checking...");
-          $('#fbNameStatusWrap').css('color', 'gray');
-
-          fbNameToCheck = $('input#nameInputField').attr('value');
-          if (fbNameToCheck.length <= 4) {
-            $('#fbNameStatus').html("Must be at least 5 characters.");
-            $('#fbNameStatusWrap').css('color', 'orange');
-          } else if (fbNameToCheck.length >50) {
-            $('#fbNameStatus').html("Must be less than 51 characters.");
-            $('#fbNameStatusWrap').css('color', 'orange');
-          } else {
-            var facebookGraphURL = 'https://graph.facebook.com/' + fbNameToCheck;
-            $.ajax({
-              url: facebookGraphURL,
-              crossDomain: true,
-              dataType: 'json',
-              success: function(data, status) {
-                console.log('Facebook AJAX success.');
-                $('#fbNameStatus').html("Taken");
-                $('#fbNameStatusWrap').css('color', 'red');
-              },
-              error: function(data, e1, e2) {
-                console.log("Facebook AJAX error.");
-                errorObject = (eval("(" + data.responseText + ")"));
-                if (errorObject.error.code == '803') {
-                  $('#fbNameStatus').html("Available");
-                  $('#fbNameStatusWrap').css('color', 'green');
-                } else {
-                  $('#fbNameStatus').html("Not Kosher");
-                  $('#fbNameStatusWrap').css('color', 'red');
-                }
-              }
-            });
-          }
-          return false;
-        }
-
-
-        function getUrlVars() {
-            var vars = {};
-            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-                vars[key] = value;
-            });
-            return vars;
-        }
-        </script>
+        <script src="script/checkDistanceFromA.js"></script>
+        <script src="script/checkDomainsAvail.js"></script>
+        <script src="script/checkFacebookAvail.js"></script>
+        <script src="script/checkTwitterAvail.js"></script>
+        <script src="script/checkSyllables.js"></script>
+        <script src="script/app.js"></script>
 
         <script type="text/javascript">
           var _gaq = _gaq || [];
-          _gaq.push(['_setAccount', 'UA-39176301-1']);
+          _gaq.push(['_setAccount', 'UA-45385013-1']);
           _gaq.push(['_trackPageview']);
 
           (function() {
@@ -182,37 +28,42 @@
         </script>
     </head>
     <body>
-
-      <div id="nameInput">
+      <div id="nameInput" class="oneColumn">
         <form id="nameInputForm" action="#">
-          <input id="nameInputField" type="text" placeholder="Brand Name" />
-          <input id="nameInputSubmit" type="submit" name="check" value="Check">
+          <input id="nameInputField" type="text" placeholder="Brand Name" class="bigForm">
+          <input id="nameInputSubmit" type="submit" name="check" value="Check" class="bigForm">
+          <div id="warning"></div>
         </form>
+      </div>
+
+      <div id="statsColumn" class="oneColumn">
+        <ul>
+          <li id="syllableCount"></li>
+          <li id="distanceFromA"></li>
+        </ul>
+      </div>
+
       </div>
       <div id="domainsColumn" class="twoColumn" style="float:left;width:40%;min-width:300px;">
         <h3>Domains:</h3>
-        <div id="doNameStatusWrap"><span id="doNameStatus">&nbsp;</span></div>
+        <div id="doNameStatusWrap">
+          <div id="doComNameStatus">
+            
+          </div>
+          <a id="doNameStatusToggle" class="doNameStatusToggle" href="#">More...</a>
+          <div id="doNameStatus" style="display:none;">
+            <div id="doNameStatusContent"></div>
+            <a class="doNameStatusToggle" href="#">Less...</a>
+          </div>
+        </div>
       </div>
       <div id="socialNetworkColumn" class="twoColumn" style="float:left;width:40%;min-width:300px;">
           <h3>Social Networks:</h3>
         <div id="fbNameStatusWrap"><p>Facebook: <span id="fbNameStatus">&nbsp;</span></p></div>
-        <div id="twNameStatusWrap"><p>Twitter: <span id="twNameStatus">&nbsp;</span></p></div>
-      </div>
+<!--         <div id="twNameStatusWrap"><p>Twitter: <span id="twNameStatus">&nbsp;</span></p></div>
+ -->      </div>
       <div id="advertisements">
         <!--BEGIN  LINK --><a href="Http://www.namecheap.com?aff=26101"><img src="http://files.namecheap.com/graphics/linkus/88x31-4.gif" height="31" width="88" border="0" alt="Namecheap.com - Cheap domain name registration, renewal and transfers - Free SSL Certificates - Web Hosting"></a><!--END  LINK -->
       </div>
-<script type="text/javascript">
-  var _gauges = _gauges || [];
-  (function() {
-    var t   = document.createElement('script');
-    t.type  = 'text/javascript';
-    t.async = true;
-    t.id    = 'gauges-tracker';
-    t.setAttribute('data-site-id', '50f3bbfe613f5d46bf000007');
-    t.src = '//secure.gaug.es/track.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(t, s);
-  })();
-</script>
     </body>
 </html>
