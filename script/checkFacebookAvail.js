@@ -11,6 +11,7 @@ function checkFacebookAvail() {
     $('#fbNameStatusWrap').css('color', 'orange');
   } else {
     var facebookGraphURL = 'https://graph.facebook.com/' + fbNameToCheck;
+    $('#fbNameStatusLabel').html("Facebook/"+fbNameToCheck+":");
     $.ajax({
       url: facebookGraphURL,
       crossDomain: true,
