@@ -7,10 +7,6 @@ $(document).ready(function() {
 
   $('#output').html("Facebook: ");
 
-  $('#nameInputField').change(function() {
-    $('#nameInputForm').submit();
-  });
-
   $('#nameInputForm').submit(checkFacebookAvail);
   //$('#nameInputForm').submit(checkTwitterAvail);
   $('#nameInputForm').submit(checkDomainsAvail);
@@ -42,8 +38,12 @@ $(document).ready(function() {
   }
 
   $('#nameInputField').keyup(function() {
-    $('#nameInputForm').submit();
     var value = $(this).val();
+    var lastvalue = $(this).attr('lastval');
+    if (value !== lastvalue) {
+      $('#nameInputForm').submit();
+    }
+    $(this).attr('lastval', value);
     if (value.length > 15) {
       $("#warning").html('Too long for Twitter');
     } else if (value.length < 5) {
