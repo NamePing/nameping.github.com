@@ -7,13 +7,27 @@ $(document).ready(function() {
 
   $('#output').html("Facebook: ");
 
-  $('#nameInputForm').submit(checkFacebookAvail);
-  //$('#nameInputForm').submit(checkTwitterAvail);
-  $('#nameInputForm').submit(checkDomainsAvail);
-  $('#nameInputForm').submit(
-    checkSyllables);
-  $('#nameInputForm').submit(
-    checkDistanceFromA);
+  var something1;
+  var something2;
+  var something3;
+  var requests = [something1, something2, something3];
+
+  // $('#nameInputForm').submit(checkFacebookAvail);
+  // //$('#nameInputForm').submit(checkTwitterAvail);
+  // $('#nameInputForm').submit(checkDomainsAvail);
+  $('#nameInputForm').submit(checkSyllables);
+  $('#nameInputForm').submit(checkDistanceFromA);
+  $('#nameInputForm').submit(function(e){
+      for(var i=0; obj=requests[i]; i++){
+        if(obj) obj.abort();
+      }
+      
+      something1 = checkFacebookAvail();
+      //something2 = checkTwitterAvail();
+      something3 = checkDomainsAvail();
+      requests = [something1, something2, something3]
+      e.preventDefault();
+  });
   $('#nameInputForm').submit(updateSiteAddress);
 
   $('#nameInputForm').submit(function() {

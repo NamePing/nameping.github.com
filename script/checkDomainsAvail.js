@@ -6,7 +6,7 @@ function checkDomainsAvail() {
   domainNameToCheck = $('input#nameInputField').attr('value');
   domainrAPIURL = 'http://domai.nr/api/json/search?q=' + domainNameToCheck;
 
-  $.ajax({
+  return $.ajax({
     url: domainrAPIURL,
     crossDomain: true,
     dataType: 'jsonp',

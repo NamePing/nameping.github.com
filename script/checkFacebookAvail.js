@@ -12,7 +12,7 @@ function checkFacebookAvail() {
   } else {
     var facebookGraphURL = 'https://graph.facebook.com/' + fbNameToCheck;
     $('#fbNameStatusLabel').html("Facebook/"+fbNameToCheck+":");
-    $.ajax({
+    return $.ajax({
       url: facebookGraphURL,
       crossDomain: true,
       dataType: 'json',
